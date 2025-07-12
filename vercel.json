@@ -1,15 +1,10 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "env": {
     "MONGODB_URI": "@mongodb_uri",
     "NEXTAUTH_SECRET": "@nextauth_secret",
-    "NEXTAUTH_URL": "@nextauth_url"
+    "NEXTAUTH_URL": "@nextauth_url",
+    "OPENAI_API_KEY": "@openai_api_key",
+    "MOONSHOT_API_KEY": "@moonshot_api_key"
   },
   "functions": {
     "pages/api/**/*.ts": {

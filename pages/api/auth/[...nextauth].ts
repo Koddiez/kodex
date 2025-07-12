@@ -9,7 +9,7 @@ const users = [
   { id: '1', email: 'demo@kodex.dev', password: '$2a$10$7Qw8Qw8Qw8Qw8Qw8Qw8QwOQw8Qw8Qw8Qw8Qw8Qw8Qw8Qw8Qw8Qw8' }, // password: demo1234
 ]
 
-export default NextAuth({
+export const authOptions = {
   session: { strategy: 'jwt' },
   providers: [
     CredentialsProvider({
@@ -33,4 +33,6 @@ export default NextAuth({
     signIn: '/auth/signin',
   },
   secret: process.env.NEXTAUTH_SECRET,
-}) 
+}
+
+export default NextAuth(authOptions) 

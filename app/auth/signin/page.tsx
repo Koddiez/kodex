@@ -1,9 +1,10 @@
+// Kodex: Sign-in page module fix
 "use client";
 
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mail, Lock, Loader2, Github, Google } from 'lucide-react'
+import { Mail, Lock, Loader2, Github, LucideGoogle } from 'lucide-react'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -77,7 +78,7 @@ export default function SignInPage() {
         </div>
         <div className="flex flex-col gap-3">
           <button className="btn-secondary flex items-center gap-2 justify-center" disabled>
-            <Google className="w-5 h-5" /> Sign in with Google (coming soon)
+            <LucideGoogle className="w-5 h-5" /> Sign in with Google (coming soon)
           </button>
           <button className="btn-secondary flex items-center gap-2 justify-center" disabled>
             <Github className="w-5 h-5" /> Sign in with GitHub (coming soon)

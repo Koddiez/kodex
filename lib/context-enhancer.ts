@@ -1,5 +1,5 @@
 import { ContextAnalysisEngine, ContextAnalysisResult } from './context-analysis-engine';
-import { ProjectContext, CodeGenerationRequest, CodeAnalysisRequest, CodeExplanationRequest, ImprovementRequest } from '@/types/ai-service';
+import { ProjectContext, CodeGenerationRequest, CodeAnalysisRequest, CodeExplanationRequest, ImprovementRequest } from '../types/ai-service';
 
 interface EnhancedContext {
   originalContext: ProjectContext;
@@ -86,7 +86,15 @@ export class ContextEnhancer {
   public async enhanceImprovement(
     request: ImprovementRequest
   ): Promise<EnhancedContext> {
-    const { context } = request;
+    // Create a basic context if none provided
+    const context = request.context || {
+      framework: 'react',
+      language: 'typescript',
+      existingFiles: [],
+      dependencies: [],
+      projectStructure: []
+    };
+    
     const analysis = await this.analysisEngine.analyze(context);
     
     const relevantSnippets = this.getRelevantSnippets(analysis, request);

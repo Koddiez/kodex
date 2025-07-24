@@ -2,9 +2,9 @@
 
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
-import Providers from '@/components/Providers';
-import { PageErrorBoundary } from '@/components/ErrorBoundary';
-import { PerformanceDashboard } from '@/components/PerformanceDashboard';
+import Providers from '../components/Providers';
+import { PageErrorBoundary } from '../components/ErrorBoundary';
+import { PerformanceDashboard } from '../components/PerformanceDashboard';
 import { useEffect } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,7 +17,7 @@ export default function ClientLayout({
   // Initialize performance monitoring in development
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
-      import('@/lib/performance-init')
+      import('../lib/performance-init')
         .then(module => module.initPerformanceMonitoring())
         .catch(error => console.error('Failed to initialize performance monitoring:', error));
     }

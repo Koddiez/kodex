@@ -81,7 +81,7 @@ export interface CodeAnalysisRequest {
   code: string
   language: string
   filePath: string
-  projectContext?: ProjectContext
+  context?: ProjectContext
 }
 
 export interface CodeAnalysisResult {
@@ -152,7 +152,7 @@ export interface ImprovementRequest {
   language: string
   filePath: string
   focus?: ImprovementFocus[]
-  projectContext?: ProjectContext
+  context?: ProjectContext
 }
 
 export type ImprovementFocus = 

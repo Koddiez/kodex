@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { RateLimiterMemory, RateLimiterRes } from 'rate-limiter-flexible';
 import { validationResult, ValidationChain } from 'express-validator';
-import helmet from 'helmet';
+// Note: helmet import removed as it's not compatible with Next.js API routes
 
 /**
  * Rate limiting configuration
@@ -208,17 +208,14 @@ export function securityHeaders() {
     },
     
     // Helmet for additional security headers
-    helmet({
-      hsts: {
-        maxAge: 31536000, // 1 year
-        includeSubDomains: true,
-        preload: true,
-      },
-      noSniff: true,
-      ieNoOpen: true,
-      xssFilter: true,
-      hidePoweredBy: true,
-    }),
+    // Note: Helmet configuration moved to Next.js config
+    (req: Request, res: Response, next: NextFunction) => {
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+      res.setHeader('X-DNS-Prefetch-Control', 'off');
+      res.setHeader('X-Download-Options', 'noopen');
+      res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+      next();
+    },
   ];
 }
 

@@ -1,6 +1,5 @@
 import { editor, languages } from 'monaco-editor';
-import * as ts from 'typescript';
-import { getLanguageFromPath } from './editor-config';
+import { getLanguageFromPath } from '../config/editor-config';
 
 export interface RefactoringResult {
   success: boolean;
@@ -518,7 +517,10 @@ export class RefactoringTools {
   }
   
   private getLineIndentation(lineNumber: number): string {
-    const line = this.editor.getModel()?.getLineContent(lineNumber) || '';
+    const model = this.editor.getModel();
+    if (!model) return '';
+    
+    const line = model.getLineContent(lineNumber);
     const match = line.match(/^\s*/);
     return match ? match[0] : '';
   }

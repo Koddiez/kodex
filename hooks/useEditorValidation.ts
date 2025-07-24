@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
+import * as ts from 'typescript';
 
 export interface UseEditorValidationProps {
   editor: editor.IStandaloneCodeEditor | null;
@@ -213,22 +214,39 @@ export function useEditorValidation({
   ) {
     if (!enableTypeChecking) return;
     
-    // Get TypeScript worker
-    const worker = await monaco.languages.typescript.getTypeScriptWorker();
-    const client = await worker(model.uri);
-    
-    // Get semantic diagnostics
-    const diagnostics = await client.getSemanticDiagnostics(model.uri.toString());
-    
-    // Convert diagnostics to markers
-    const markers = diagnostics.map(diagnostic => ({
-      ...diagnostic,
-      severity: monaco.MarkerSeverity.Error,
-      source: 'typescript',
-    }));
-    
-    // Add markers to the editor
-    monaco.editor.setModelMarkers(model, 'typescript', markers);
+    try {
+      // Get TypeScript worker
+      const worker = await monaco.languages.typescript.getTypeScriptWorker();
+      const client = await worker(model.uri);
+      
+      // Get semantic diagnostics
+      const diagnostics = await client.getSemanticDiagnostics(model.uri.toString());
+      
+      // Convert diagnostics to markers
+      const markers = diagnostics.map(diagnostic => ({
+        startLineNumber: diagnostic.start ? model.getPositionAt(diagnostic.start).lineNumber : 1,
+        startColumn: diagnostic.start ? model.getPositionAt(diagnostic.start).column : 1,
+        endLineNumber: diagnostic.start && diagnostic.length ? 
+          model.getPositionAt(diagnostic.start + diagnostic.length).lineNumber : 1,
+        endColumn: diagnostic.start && diagnostic.length ? 
+          model.getPositionAt(diagnostic.start + diagnostic.length).column : 1,
+        message: typeof diagnostic.messageText === 'string' ? 
+          diagnostic.messageText : 
+          ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
+        severity: diagnostic.category === ts.DiagnosticCategory.Error ? 
+          monaco.MarkerSeverity.Error : 
+          diagnostic.category === ts.DiagnosticCategory.Warning ? 
+          monaco.MarkerSeverity.Warning : 
+          monaco.MarkerSeverity.Info,
+        source: 'typescript',
+        code: diagnostic.code?.toString(),
+      }));
+      
+      // Add markers to the editor
+      monaco.editor.setModelMarkers(model, 'typescript', markers);
+    } catch (error) {
+      console.error('TypeScript validation error:', error);
+    }
   }
   
   async function validateWithESLint(

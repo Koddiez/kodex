@@ -9,7 +9,7 @@ import {
   ImprovementRequest,
   ImprovementResult,
   GeneratedFile
-} from '@/types/ai-service'
+} from '../../types/ai-service'
 
 interface ClaudeConfig {
   apiKey: string

@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Editor, { Monaco, OnMount } from '@monaco-editor/react';
-import { useMonacoEditor } from '@/hooks/useMonacoEditor';
-import { useEditorValidation } from '@/hooks/useEditorValidation';
-import { useEditorDebugging } from '@/hooks/useEditorDebugging';
-import { RefactoringTools } from '@/lib/refactoring-tools';
-import { getLanguageFromPath } from '@/lib/editor-config';
+import { useMonacoEditor } from '../hooks/useMonacoEditor';
+import { useEditorValidation } from '../hooks/useEditorValidation';
+import { useEditorDebugging } from '../hooks/useEditorDebugging';
+import { RefactoringTools } from '../lib/refactoring-tools';
+import { getLanguageFromPath } from '../config/editor-config';
 
 interface EnhancedMonacoEditorProps {
   /** Initial editor value */
@@ -72,7 +72,7 @@ export function EnhancedMonacoEditor({
   const [variables, setVariables] = useState<Record<string, any>>({});
   
   // Initialize Monaco Editor
-  const { editor: monacoEditor, monaco } = useMonacoEditor({
+  const { editor: monacoEditor, monaco, isReady } = useMonacoEditor({
     containerRef,
     initialValue: value,
     language,

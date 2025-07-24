@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { editor } from 'monaco-editor';
-import { configureMonaco, defaultEditorConfig, getLanguageFromPath } from '@/config/editor-config';
+import { configureMonaco, defaultEditorConfig, getLanguageFromPath } from '../config/editor-config';
 
 export interface UseMonacoEditorProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -81,13 +81,6 @@ export function useMonacoEditor({
 
         setIsEditorReady(true);
 
-        // Cleanup function
-        return () => {
-          mounted = false;
-          subscriptionRef.current?.dispose();
-          editorInstance?.dispose();
-          resizeObserver.disconnect();
-        };
       })
       .catch((error) => {
         console.error('Failed to load Monaco Editor:', error);
@@ -167,6 +160,8 @@ export function useMonacoEditor({
 
   return {
     isReady: isEditorReady,
+    editor: editorRef.current,
+    monaco: monacoRef.current,
     getValue,
     setValue,
     getEditor,

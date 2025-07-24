@@ -10,8 +10,8 @@ import {
   ImprovementResult,
   AIServiceConfig,
   AIServiceMetrics
-} from '@/types/ai-service'
-import { performanceMonitor } from '@/lib/performance-monitor'
+} from '../types/ai-service'
+import { performanceMonitor } from '../lib/performance-monitor'
 
 // Provider implementations
 import { ClaudeProvider } from './providers/claude-provider'

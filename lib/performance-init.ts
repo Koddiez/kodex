@@ -1,5 +1,5 @@
 // Performance monitoring initialization service
-import { performanceMonitor, trackEvent } from './performance-monitor'
+import { performanceMonitor } from './performance-monitor'
 import { realTimeMonitor } from './real-time-monitor'
 
 export class PerformanceInit {
@@ -13,7 +13,7 @@ export class PerformanceInit {
       console.log('Initializing performance monitoring...')
       
       // Track page load event
-      trackEvent('page_load', {
+      performanceMonitor.trackEvent('page_load', {
         url: window.location.href,
         referrer: document.referrer,
         userAgent: navigator.userAgent,
@@ -46,7 +46,7 @@ export class PerformanceInit {
     document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement
       if (target) {
-        trackEvent('user_click', {
+        performanceMonitor.trackEvent('user_click', {
           element: target.tagName.toLowerCase(),
           className: target.className,
           id: target.id,
@@ -60,7 +60,7 @@ export class PerformanceInit {
     document.addEventListener('submit', (event) => {
       const form = event.target as HTMLFormElement
       if (form) {
-        trackEvent('form_submit', {
+        performanceMonitor.trackEvent('form_submit', {
           formId: form.id,
           formName: form.name,
           action: form.action,
@@ -74,7 +74,7 @@ export class PerformanceInit {
     document.addEventListener('focusin', (event) => {
       const target = event.target as HTMLElement
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
-        trackEvent('input_focus', {
+        performanceMonitor.trackEvent('input_focus', {
           inputType: (target as HTMLInputElement).type || 'textarea',
           inputName: (target as HTMLInputElement).name,
           timestamp: new Date().toISOString()
@@ -86,7 +86,7 @@ export class PerformanceInit {
   private static setupNavigationTracking(): void {
     // Track page visibility changes
     document.addEventListener('visibilitychange', () => {
-      trackEvent('page_visibility_change', {
+      performanceMonitor.trackEvent('page_visibility_change', {
         hidden: document.hidden,
         visibilityState: document.visibilityState,
         timestamp: new Date().toISOString()
@@ -95,7 +95,7 @@ export class PerformanceInit {
 
     // Track page unload
     window.addEventListener('beforeunload', () => {
-      trackEvent('page_unload', {
+      performanceMonitor.trackEvent('page_unload', {
         url: window.location.href,
         timestamp: new Date().toISOString()
       })
@@ -103,7 +103,7 @@ export class PerformanceInit {
 
     // Track hash changes (for SPA navigation)
     window.addEventListener('hashchange', () => {
-      trackEvent('hash_change', {
+      performanceMonitor.trackEvent('hash_change', {
         oldURL: window.location.href,
         newURL: window.location.href,
         timestamp: new Date().toISOString()
@@ -114,7 +114,7 @@ export class PerformanceInit {
   private static setupErrorTracking(): void {
     // Track JavaScript errors
     window.addEventListener('error', (event) => {
-      trackEvent('javascript_error', {
+      performanceMonitor.trackEvent('javascript_error', {
         message: event.message,
         filename: event.filename,
         lineno: event.lineno,
@@ -126,7 +126,7 @@ export class PerformanceInit {
 
     // Track unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
-      trackEvent('unhandled_promise_rejection', {
+      performanceMonitor.trackEvent('unhandled_promise_rejection', {
         reason: event.reason?.toString(),
         stack: event.reason?.stack,
         timestamp: new Date().toISOString()
@@ -137,7 +137,7 @@ export class PerformanceInit {
     window.addEventListener('error', (event) => {
       if (event.target !== window) {
         const target = event.target as HTMLElement
-        trackEvent('resource_error', {
+        performanceMonitor.trackEvent('resource_error', {
           tagName: target.tagName,
           src: (target as any).src || (target as any).href,
           timestamp: new Date().toISOString()
@@ -147,7 +147,7 @@ export class PerformanceInit {
   }
 
   public static trackCustomEvent(eventName: string, properties?: Record<string, unknown>): void {
-    trackEvent(eventName, {
+    performanceMonitor.trackEvent(eventName, {
       ...properties,
       timestamp: new Date().toISOString()
     })
@@ -174,6 +174,11 @@ if (typeof window !== 'undefined') {
   } else {
     PerformanceInit.initialize()
   }
+}
+
+// Export the initialization function
+export function initPerformanceMonitoring(): void {
+  PerformanceInit.initialize()
 }
 
 export default PerformanceInit

@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { performanceMonitor } from '@/lib/performance-monitor'
-import { realTimeMonitor, SystemHealthMetrics, PerformanceAlert } from '@/lib/real-time-monitor'
+import { performanceMonitor } from '../lib/performance-monitor'
+import { realTimeMonitor, SystemHealthMetrics, PerformanceAlert } from '../lib/real-time-monitor'
 
 interface PerformanceStats {
   webVitals: Record<string, number>
@@ -111,8 +111,12 @@ export function PerformanceDashboard() {
   }, [isVisible, fetchDashboardMetrics])
 
   const updateStats = () => {
-    const summary = performanceMonitor.getPerformanceSummary()
-    setStats(summary)
+    try {
+      const summary = performanceMonitor.getPerformanceSummary()
+      setStats(summary)
+    } catch (error) {
+      console.error('Failed to get performance summary:', error)
+    }
   }
 
   const formatMetricValue = (value: number, unit?: string): string => {

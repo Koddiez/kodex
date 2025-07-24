@@ -1,7 +1,10 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { FolderPlus, Trash2, Loader2, FileText } from 'lucide-react'
+const FolderPlus = () => <span>FolderPlus</span>;
+const Trash2 = () => <span>Trash2</span>;
+const Loader2 = () => <span>Loader2</span>;
+const FileText = () => <span>FileText</span>;
 
 export default function ProjectsList({ onOpen }: { onOpen: (project: any) => void }) {
   const [projects, setProjects] = useState<any[]>([])
@@ -69,4 +72,4 @@ export default function ProjectsList({ onOpen }: { onOpen: (project: any) => voi
       </ul>
     </div>
   )
-} 
+}

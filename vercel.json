@@ -1,14 +1,13 @@
 {
-  "env": {
-    "MONGODB_URI": "mongodb+srv://kodex:koddiezcluster@kodex.szwnjqo.mongodb.net/?retryWrites=true&w=majority&appName=Kodex",
-    "NEXTAUTH_SECRET": "2w1v69G/RI3Gl/5x8x5LLJ/SiaUoclbapag=",
-    "NEXTAUTH_URL": "https://kodex.vercel.app",
-    "OPENAI_API_KEY": "CC9JSn2jNq-NqJKCI4SZ6_EebASIEcqsYA",
-    "MOONSHOT_API_KEY": "1PsPNSDUWa3HRDjplFYn9LTzzXYnD2Mhp"
-  },
   "functions": {
     "pages/api/**/*.ts": {
       "maxDuration": 30
     }
-  }
-} 
+  },
+  "rewrites": [
+    {
+      "source": "/api/collaboration/socket",
+      "destination": "/api/collaboration/socket"
+    }
+  ]
+}

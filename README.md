@@ -16,20 +16,26 @@ Kodex is a modern, collaborative web development platform that combines the best
 - **Multi-language Support** - JavaScript, TypeScript, Python, React, and more
 - **File Management** - Create, edit, and organize files within projects
 - **AI Chat Assistant** - Get help and generate code with AI
-- **Collaborative Editing** - See real-time changes from other users
+- **Collaborative Editing** - See real-time changes from other users with presence indicators
 - **Project Templates** - Start with pre-built templates
 - **Version Control** - Track changes and collaborate effectively
+- **Advanced Security** - Rate limiting, input validation, and WebSocket security
+- **Performance Optimized** - Comprehensive benchmarking and performance monitoring
+- **Type Safety** - Strict TypeScript configuration for better code quality
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, React 18, TypeScript
+- **Frontend**: Next.js 14, React 18, TypeScript 5.5
 - **Styling**: Tailwind CSS, Framer Motion
-- **Editor**: Monaco Editor (VS Code's editor)
+- **Editor**: Monaco Editor with custom extensions
 - **Backend**: Next.js API Routes, MongoDB
-- **Authentication**: NextAuth.js
-- **Real-time**: Socket.io
+- **Authentication**: NextAuth.js with JWT
+- **Real-time**: Socket.io with WebSocket security
+- **State Management**: React Context + Custom Hooks
+- **Testing**: Jest, React Testing Library
+- **Performance**: Custom benchmarking utilities
 - **Deployment**: Vercel integration
-- **Database**: MongoDB Atlas
+- **Database**: MongoDB Atlas with Mongoose ODM
 
 ## 📦 Installation
 
@@ -47,9 +53,11 @@ Kodex is a modern, collaborative web development platform that combines the best
 3. **Set up environment variables**
    Create a `.env.local` file in the root directory:
    ```env
-   MONGODB_URI=mongodb+srv://kodex:koddiezcluster@kodex.szwnjqo.mongodb.net/?retryWrites=true&w=majority&appName=Kodex
-   NEXTAUTH_SECRET=your_nextauth_secret_here
-   NEXTAUTH_URL=http://localhost:3000
+   MONGODB_URI=
+   NEXTAUTH_SECRET=
+   NEXTAUTH_URL=
+   OPENAI_API_KEY=
+   MOONSHOT_API_KEY=
    ```
 
 4. **Run the development server**

@@ -1,12 +1,16 @@
-// Kodex: Sign-in page module fix
-"use client";
+'use client'
 
-import { signIn } from 'next-auth/react'
 import { useState } from 'react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Mail, Lock, Loader2, Github, LucideGoogle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
 
-export default function SignInPage() {
+const Mail = () => <span>📧</span>
+const Lock = () => <span>🔒</span>
+const Code = () => <span>💻</span>
+
+export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -17,74 +21,112 @@ export default function SignInPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
-    setLoading(false)
-    if (res?.ok) {
-      router.push('/dashboard')
-    } else {
-      setError('Invalid credentials')
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError('Invalid credentials')
+      } else {
+        router.push('/dashboard')
+      }
+    } catch (error) {
+      setError('Something went wrong')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-900">
-      <div className="card w-full max-w-md mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center gradient-text">Sign in to Kodex</h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block mb-1 text-dark-300">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 w-5 h-5 text-dark-400" />
-              <input
-                type="email"
-                className="input-field pl-10 w-full"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                autoFocus
-              />
+    <div className="min-h-screen bg-dark-900 flex items-center justify-center px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full space-y-8"
+      >
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-4">
+            <Code className="w-12 h-12 text-primary-500" />
+          </div>
+          <h2 className="text-3xl font-bold gradient-text">Welcome to Kodex</h2>
+          <p className="mt-2 text-dark-300">Sign in to your account</p>
+        </div>
+
+        <div className="card">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-dark-200 mb-2">
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="input-field pl-10 w-full"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-dark-200 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-400" />
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="input-field pl-10 w-full"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full py-3 text-lg"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <div className="bg-primary-500/10 border border-primary-500/20 text-primary-400 px-4 py-3 rounded-lg">
+              <p className="text-sm font-medium">Demo Account:</p>
+              <p className="text-xs">Email: demo@kodex.dev</p>
+              <p className="text-xs">Password: demo1234</p>
             </div>
           </div>
-          <div>
-            <label className="block mb-1 text-dark-300">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 w-5 h-5 text-dark-400" />
-              <input
-                type="password"
-                className="input-field pl-10 w-full"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          {error && <div className="text-red-500 text-sm">{error}</div>}
-          <button
-            type="submit"
-            className="btn-primary w-full flex items-center justify-center gap-2"
-            disabled={loading}
-          >
-            {loading ? <Loader2 className="animate-spin w-5 h-5" /> : 'Sign In'}
-          </button>
-        </form>
-        <div className="my-6 flex items-center gap-2">
-          <div className="flex-1 h-px bg-dark-700" />
-          <span className="text-dark-400 text-xs">or</span>
-          <div className="flex-1 h-px bg-dark-700" />
         </div>
-        <div className="flex flex-col gap-3">
-          <button className="btn-secondary flex items-center gap-2 justify-center" disabled>
-            <LucideGoogle className="w-5 h-5" /> Sign in with Google (coming soon)
-          </button>
-          <button className="btn-secondary flex items-center gap-2 justify-center" disabled>
-            <Github className="w-5 h-5" /> Sign in with GitHub (coming soon)
-          </button>
+
+        <div className="text-center">
+          <Link href="/" className="text-primary-500 hover:text-primary-400 transition-colors">
+            ← Back to home
+          </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
-} 
+}

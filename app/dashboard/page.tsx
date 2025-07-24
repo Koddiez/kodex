@@ -1,155 +1,95 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import Editor from '../../components/Editor'
-import { Plus, Folder, FileText, Save, Play, Users } from 'lucide-react'
-import AIChat from '../../components/AIChat'
-import { signOut, useSession } from 'next-auth/react'
-import ProjectsList from './ProjectsList'
+import { useState, useEffect } from 'react'
+import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import KodexIDE from '@/components/KodexIDE'
+import SettingsPanel from '@/components/SettingsPanel'
 
-const initialFiles = [
-  { name: 'index.tsx', language: 'typescript', content: '// Start coding with Kodex!\n' },
-  { name: 'styles.css', language: 'css', content: 'body {\n  background: #0f172a;\n}' },
-]
+export default function Dashboard() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const [currentMode, setCurrentMode] = useState<'developer' | 'designer' | 'product'>('developer')
+  const [showSettings, setShowSettings] = useState(false)
 
-export default function DashboardPage() {
-  const [files, setFiles] = useState(initialFiles)
-  const [activeFile, setActiveFile] = useState(0)
-  const [currentProject, setCurrentProject] = useState<any>(null)
-  const { data: session } = useSession()
-
-  const handleEditorChange = (value: string | undefined) => {
-    setFiles((prev) => {
-      const updated = [...prev]
-      updated[activeFile] = { ...updated[activeFile], content: value || '' }
-      return updated
-    })
-  }
-
-  const addFile = () => {
-    setFiles((prev) => [
-      ...prev,
-      { name: `untitled-${prev.length + 1}.js`, language: 'javascript', content: '' }
-    ])
-    setActiveFile(files.length)
-  }
-
-  const handleOpenProject = (project: any) => {
-    setCurrentProject(project)
-    setFiles(project.files.length ? project.files : initialFiles)
-    setActiveFile(0)
-  }
-
-  const handleSave = async () => {
-    if (!currentProject) return
-    await fetch(`/api/projects/${currentProject._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: currentProject.name, files }),
-    })
-  }
-
-  const handleInsertCode = (code: string, language: string) => {
-    const newFile = {
-      name: `generated-${Date.now()}.${language === 'javascript' ? 'js' : language === 'typescript' ? 'ts' : language === 'python' ? 'py' : 'jsx'}`,
-      language,
-      content: code
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin')
     }
-    setFiles([...files, newFile])
-    setActiveFile(files.length)
+  }, [status, router])
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white">Loading Kodex...</div>
+      </div>
+    )
   }
 
-  const handleDeploy = async () => {
-    if (!currentProject) return
-    
-    try {
-      const response = await fetch('/api/deploy/vercel', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          projectId: currentProject._id, 
-          projectName: currentProject.name,
-          files: files
-        }),
-      })
-      
-      const deployment = await response.json()
-      
-      if (deployment.url) {
-        window.open(deployment.url, '_blank')
-      }
-    } catch (error) {
-      console.error('Deployment failed:', error)
-    }
+  if (!session) {
+    return null
   }
 
   return (
-    <div className="min-h-screen bg-dark-900 flex flex-col">
-      <header className="flex items-center justify-between px-8 py-4 border-b border-dark-700 bg-dark-800">
-        <div className="flex items-center gap-3">
-          <Folder className="w-6 h-6 text-primary-500" />
-          <span className="text-2xl font-bold gradient-text">Kodex Dashboard</span>
-        </div>
-        <div className="flex items-center gap-4">
-          {session?.user?.email && (
-            <span className="text-dark-300 text-sm">{session.user.email}</span>
-          )}
-          <button className="btn-secondary flex items-center gap-2" onClick={addFile}>
-            <Plus className="w-4 h-4" /> New File
-          </button>
-          <button className="btn-primary flex items-center gap-2" onClick={handleSave}>
-            <Save className="w-4 h-4" /> Save
-          </button>
-          <button className="btn-primary flex items-center gap-2" onClick={handleDeploy}>
-            <Play className="w-4 h-4" /> Deploy
-          </button>
-          <button className="btn-secondary flex items-center gap-2">
-            <Users className="w-4 h-4" /> Share
-          </button>
-          <button className="btn-secondary flex items-center gap-2" onClick={() => signOut()}>Sign Out</button>
-        </div>
-      </header>
-      <main className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-64 bg-dark-800 border-r border-dark-700 p-4 flex flex-col gap-4">
-          <h3 className="text-lg font-semibold mb-2">Projects</h3>
-          <ProjectsList onOpen={handleOpenProject} />
-          <h3 className="text-lg font-semibold mt-8 mb-2">Files</h3>
-          <ul className="space-y-2">
-            {files.map((file, idx) => (
-              <li key={file.name}>
+    <div className="min-h-screen bg-gray-900">
+      {/* Top Navigation */}
+      <nav className="bg-gray-800 border-b border-gray-700 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+                <span className="text-white font-bold text-sm">K</span>
+              </div>
+              <span className="text-white font-semibold">Kodex</span>
+            </div>
+            
+            {/* Mode Switcher */}
+            <div className="flex bg-gray-700 rounded-lg p-1">
+              {(['developer', 'designer', 'product'] as const).map((mode) => (
                 <button
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                    idx === activeFile ? 'bg-primary-600 text-white' : 'hover:bg-dark-700 text-dark-200'
+                  key={mode}
+                  onClick={() => setCurrentMode(mode)}
+                  className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                    currentMode === mode
+                      ? 'bg-blue-500 text-white'
+                      : 'text-gray-300 hover:text-white'
                   }`}
-                  onClick={() => setActiveFile(idx)}
                 >
-                  <FileText className="w-4 h-4" />
-                  <span className="truncate">{file.name}</span>
+                  {mode.charAt(0).toUpperCase() + mode.slice(1)}
                 </button>
-              </li>
-            ))}
-          </ul>
-        </aside>
-        {/* Editor + AI Chat */}
-        <section className="flex-1 p-8 overflow-auto flex gap-8">
-          <div className="flex-1">
-            <Editor
-              value={files[activeFile].content}
-              language={files[activeFile].language}
-              onChange={handleEditorChange}
-              projectId={currentProject?._id}
-              fileIndex={activeFile}
-            />
+              ))}
+            </div>
           </div>
-          <div className="hidden xl:block w-[380px] flex-shrink-0">
-            <AIChat 
-              onInsertCode={handleInsertCode}
-              currentLanguage={files[activeFile]?.language}
-            />
+
+          <div className="flex items-center space-x-4">
+            <span className="text-gray-300 text-sm">Welcome, {session.user?.email}</span>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="text-gray-300 hover:text-white p-1 rounded hover:bg-gray-700 transition-colors"
+              title="Settings"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+            <button
+              onClick={() => signOut()}
+              className="text-gray-300 hover:text-white text-sm px-3 py-1 rounded hover:bg-gray-700 transition-colors"
+            >
+              Sign Out
+            </button>
           </div>
-        </section>
-      </main>
+        </div>
+      </nav>
+
+      {/* Main IDE Interface */}
+      <KodexIDE mode={currentMode} />
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <SettingsPanel onClose={() => setShowSettings(false)} />
+      )}
     </div>
   )
-} 
+}

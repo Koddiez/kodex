@@ -1,141 +1,151 @@
 # Kodex Deployment Guide
 
-## 🚀 Quick Deploy to Vercel
+This guide will help you deploy Kodex to production on Vercel.
 
-### Step 1: Push to GitHub
+## Prerequisites
 
-1. **Create a new GitHub repository:**
-   - Go to [GitHub](https://github.com)
-   - Click "New repository"
-   - Name it `kodex` or `kodex-platform`
-   - Make it public or private (your choice)
-   - Don't initialize with README (we already have one)
+- Vercel account
+- MongoDB Atlas cluster
+- OpenAI API key (optional)
+- Moonshot API key (optional)
 
-2. **Push your code to GitHub:**
-   ```bash
-   # If you haven't already initialized git
-   git init
-   git add .
-   git commit -m "Initial Kodex platform"
-   
-   # Add your GitHub repository as remote
-   git remote add origin https://github.com/YOUR_USERNAME/kodex.git
-   git branch -M main
-   git push -u origin main
-   ```
+## Environment Variables
 
-### Step 2: Deploy to Vercel
+Set up the following environment variables in your Vercel dashboard:
 
-1. **Go to Vercel:**
-   - Visit [vercel.com](https://vercel.com)
-   - Sign in with your GitHub account
+### Required Variables
+```env
+MONGODB_URI=mongodb+srv://kodex:koddiezcluster@kodex.szwnjqo.mongodb.net/?retryWrites=true&w=majority&appName=Kodex
+NEXTAUTH_SECRET=2w1v69G/RI3Gl/5x8x5LLJ/SiaUoclbapag=
+NEXTAUTH_URL=https://your-domain.vercel.app
+```
 
-2. **Import your repository:**
-   - Click "New Project"
-   - Import your `kodex` repository
-   - Vercel will automatically detect it's a Next.js project
+### AI API Keys (Optional)
+```env
+OPENAI_API_KEY=CC9JSn2jNq-NqJKCI4SZ6_EebASIEcqsYA
+MOONSHOT_API_KEY=1PsPNSDUWa3HRDjplFYn9LTzzXYnD2Mhp
+```
 
-3. **Configure environment variables:**
-   In the Vercel project settings, add these environment variables:
-   
-   ```
-   MONGODB_URI=mongodb+srv://kodex:koddiezcluster@kodex.szwnjqo.mongodb.net/?retryWrites=true&w=majority&appName=Kodex
-   NEXTAUTH_SECRET=your_secure_random_string_here
-   NEXTAUTH_URL=https://your-vercel-domain.vercel.app
-   ```
+### OAuth Providers (Optional)
+```env
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GITHUB_ID=your_github_client_id
+GITHUB_SECRET=your_github_client_secret
+```
 
-4. **Deploy:**
-   - Click "Deploy"
-   - Vercel will build and deploy your project
-   - You'll get a URL like `https://kodex-username.vercel.app`
+## Deployment Steps
 
-### Step 3: Test Your Deployment
+### 1. Connect to Vercel
+1. Go to [vercel.com](https://vercel.com)
+2. Sign in with your GitHub account
+3. Import your Kodex repository
+4. Configure the project settings
 
-1. **Visit your deployed URL**
-2. **Sign in with demo account:**
-   - Email: `demo@kodex.dev`
-   - Password: `demo1234`
+### 2. Set Environment Variables
+1. Go to your project settings in Vercel
+2. Navigate to "Environment Variables"
+3. Add all the required variables listed above
+4. Make sure to set them for all environments (Production, Preview, Development)
 
-3. **Test features:**
-   - Create a new project
-   - Use AI code generation
-   - Test real-time collaboration
-   - Deploy a project
+### 3. Deploy
+1. Trigger a deployment from the Vercel dashboard
+2. Wait for the build to complete
+3. Your app will be available at `https://your-project.vercel.app`
 
-## 🔧 Environment Variables
+## Post-Deployment Configuration
 
-### Required Variables:
-- `MONGODB_URI`: Your MongoDB connection string
-- `NEXTAUTH_SECRET`: A secure random string (generate with `openssl rand -base64 32`)
-- `NEXTAUTH_URL`: Your Vercel deployment URL
+### 1. Update NEXTAUTH_URL
+After deployment, update the `NEXTAUTH_URL` environment variable to match your actual domain:
+```env
+NEXTAUTH_URL=https://your-actual-domain.vercel.app
+```
 
-### Optional Variables (for future use):
-- `VERCEL_TOKEN`: For real Vercel deployments
-- `GITHUB_TOKEN`: For GitHub integration
-- `GOOGLE_CLIENT_ID`: For Google OAuth
-- `GOOGLE_CLIENT_SECRET`: For Google OAuth
-- `GITHUB_ID`: For GitHub OAuth
-- `GITHUB_SECRET`: For GitHub OAuth
+### 2. Configure OAuth Callbacks
+If using OAuth providers, update the callback URLs:
+- Google: `https://your-domain.vercel.app/api/auth/callback/google`
+- GitHub: `https://your-domain.vercel.app/api/auth/callback/github`
 
-## 🛠️ Local Development
+### 3. Test the Application
+1. Visit your deployed application
+2. Test the sign-in functionality
+3. Create a test project
+4. Verify AI code generation works
+5. Test real-time collaboration features
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+## Troubleshooting
 
-2. **Set up environment variables:**
-   Create a `.env.local` file:
-   ```env
-   MONGODB_URI=mongodb+srv://kodex:koddiezcluster@kodex.szwnjqo.mongodb.net/?retryWrites=true&w=majority&appName=Kodex
-   NEXTAUTH_SECRET=your_local_secret_here
-   NEXTAUTH_URL=http://localhost:3000
-   ```
+### Common Issues
 
-3. **Run development server:**
-   ```bash
-   npm run dev
-   ```
+1. **Authentication not working**
+   - Check NEXTAUTH_SECRET is set correctly
+   - Verify NEXTAUTH_URL matches your domain
+   - Ensure OAuth callback URLs are correct
 
-4. **Open in browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+2. **Database connection issues**
+   - Verify MONGODB_URI is correct
+   - Check MongoDB Atlas network access settings
+   - Ensure database user has proper permissions
 
-## 🔐 Security Notes
+3. **AI features not working**
+   - Verify API keys are set correctly
+   - Check API key permissions and quotas
+   - Monitor API usage in respective dashboards
 
-- Never commit API keys to Git
-- Use environment variables for all secrets
-- The MongoDB connection string is already configured
-- NextAuth secret should be a secure random string
+4. **Real-time features not working**
+   - Socket.io may need additional configuration for serverless
+   - Consider using Vercel's Edge Functions for better WebSocket support
 
-## 🎯 Features to Test
+### Performance Optimization
 
-### ✅ Working Features:
-- **Authentication** - Sign in with demo account
-- **Project Management** - Create, edit, delete projects
-- **AI Code Generation** - Generate code with OpenAI/Moonshot
-- **Real-time Collaboration** - Multi-user editing
-- **Modern UI** - Responsive design with dark theme
-- **File Management** - Create and edit multiple files
-- **Deployment** - Deploy projects to Vercel
+1. **Enable caching**
+   - Configure appropriate cache headers
+   - Use Vercel's Edge Network for static assets
 
-### 🚀 Advanced Features:
-- **Socket.io** - Real-time collaboration
-- **Monaco Editor** - VS Code-like editing experience
-- **Tailwind CSS** - Modern styling
-- **Framer Motion** - Smooth animations
-- **TypeScript** - Type-safe development
+2. **Database optimization**
+   - Add proper indexes to MongoDB collections
+   - Implement connection pooling
 
-## 📞 Support
+3. **API optimization**
+   - Implement rate limiting
+   - Add request/response compression
 
-If you encounter any issues:
+## Monitoring
 
-1. **Check the logs** in Vercel dashboard
-2. **Verify environment variables** are set correctly
-3. **Test locally** first to isolate issues
-4. **Check MongoDB connection** is working
+### Set up monitoring for:
+- Application performance
+- API response times
+- Database connection health
+- Error tracking
+- User analytics
 
-## 🎉 Success!
+### Recommended tools:
+- Vercel Analytics
+- MongoDB Atlas monitoring
+- Sentry for error tracking
+- LogRocket for user sessions
 
-Once deployed, you'll have a production-ready, full-stack web development platform that rivals and exceeds Lovable, v0, and bolt.new!
+## Security Checklist
 
-Your Kodex platform will be available at: `https://your-vercel-domain.vercel.app` 
+- [ ] Environment variables are properly secured
+- [ ] API keys have minimal required permissions
+- [ ] Database access is restricted to application only
+- [ ] HTTPS is enforced
+- [ ] CORS is properly configured
+- [ ] Rate limiting is implemented
+- [ ] Input validation is in place
+- [ ] Authentication is working correctly
+
+## Scaling Considerations
+
+As your application grows, consider:
+- Database sharding
+- CDN for static assets
+- Caching strategies
+- Load balancing
+- Microservices architecture
+- Separate AI service deployment
+
+---
+
+For additional support, contact the Kodex team or check our documentation.

@@ -1,7 +1,10 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react'
-import { Sparkles, Send, Code, Loader2 } from 'lucide-react'
+const Sparkles = () => <span>Sparkles</span>;
+const Send = () => <span>Send</span>;
+const Code = () => <span>Code</span>;
+const Loader2 = () => <span>Loader2</span>;
 
 interface AIChatProps {
   onInsertCode?: (code: string, language: string) => void
@@ -137,4 +140,4 @@ export default function AIChat({ onInsertCode, currentLanguage = 'javascript' }:
       </form>
     </div>
   )
-} 
+}

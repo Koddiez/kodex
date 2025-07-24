@@ -1,21 +1,20 @@
 'use client'
 
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Code, 
-  Zap, 
-  Users, 
-  Rocket, 
-  Shield, 
-  Sparkles,
-  ArrowRight,
-  Check,
-  Star
-} from 'lucide-react'
+
+interface IconProps {
+  className?: string
+}
+
+const Code = ({ className }: IconProps) => <span className={className}>💻</span>
+const Zap = ({ className }: IconProps) => <span className={className}>⚡</span>
+const Users = ({ className }: IconProps) => <span className={className}>👥</span>
+const Rocket = ({ className }: IconProps) => <span className={className}>🚀</span>
+const Shield = ({ className }: IconProps) => <span className={className}>🛡️</span>
+const Sparkles = ({ className }: IconProps) => <span className={className}>✨</span>
+const ArrowRight = ({ className }: IconProps) => <span className={className}>→</span>
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState('free')
 
   const features = [
     {
@@ -63,7 +62,7 @@ export default function HomePage() {
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-dark-300 hover:text-white transition-colors">Features</a>
               <a href="#docs" className="text-dark-300 hover:text-white transition-colors">Docs</a>
-              <button className="btn-primary">Get Started</button>
+              <a href="/auth/signin" className="btn-primary">Get Started</a>
             </div>
           </div>
         </div>
@@ -82,14 +81,14 @@ export default function HomePage() {
               <span className="gradient-text">Web Development</span>
             </h1>
             <p className="text-xl md:text-2xl text-dark-300 mb-8 max-w-3xl mx-auto">
-              Build, deploy, and scale your web applications with AI-powered assistance. 
+              Build, deploy, and scale your web applications with AI-powered assistance.
               The ultimate platform for modern developers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-primary text-lg px-8 py-4 flex items-center justify-center">
+              <a href="/auth/signin" className="btn-primary text-lg px-8 py-4 flex items-center justify-center">
                 Start Building Free
                 <ArrowRight className="ml-2 w-5 h-5" />
-              </button>
+              </a>
               <button className="btn-secondary text-lg px-8 py-4">
                 Watch Demo
               </button>
@@ -132,9 +131,9 @@ export default function HomePage() {
           <p className="text-xl mb-8 text-white/90">
             Join thousands of developers who are already building amazing applications with Kodex
           </p>
-          <button className="bg-white text-primary-600 font-semibold py-4 px-8 rounded-lg text-lg hover:bg-gray-100 transition-colors">
+          <a href="/auth/signin" className="bg-white text-primary-600 font-semibold py-4 px-8 rounded-lg text-lg hover:bg-gray-100 transition-colors inline-block">
             Start Building Now
-          </button>
+          </a>
         </div>
       </section>
 
@@ -186,4 +185,4 @@ export default function HomePage() {
       </footer>
     </div>
   )
-} 
+}

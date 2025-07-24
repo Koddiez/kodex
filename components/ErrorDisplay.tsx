@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { ErrorType } from '@/lib/error-handler'
+import { ErrorType } from '../lib/error-handler'
 
 interface ErrorDisplayProps {
   type?: ErrorType
@@ -260,7 +260,7 @@ function getErrorConfig(type: ErrorType) {
         </svg>
       )
     },
-    [ErrorType.NETWORK_ERROR]: {
+    [ErrorType.SYSTEM_ERROR]: {
       title: 'Network Error',
       bgColor: 'bg-gray-50',
       borderColor: 'border-gray-200',

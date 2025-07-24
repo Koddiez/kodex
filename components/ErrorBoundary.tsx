@@ -1,7 +1,7 @@
 'use client'
 
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { ErrorType, ErrorHandler, AppError } from '@/lib/error-handler'
+import { ErrorType, ErrorHandler, AppError } from '../lib/error-handler'
 
 interface Props {
   children: ReactNode

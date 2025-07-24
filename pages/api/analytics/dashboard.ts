@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { withAPIPerformanceTracking } from '@/lib/api-performance-middleware'
-import { connectToDatabase } from '@/lib/mongodb'
+import { withAPIPerformanceTracking } from '../../../lib/api-performance-middleware'
+import { connectToDatabase } from '../../../lib/mongodb'
 
 interface DashboardMetrics {
   webVitals: {

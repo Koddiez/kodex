@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { withAPIPerformanceTracking } from '@/lib/api-performance-middleware'
-import { connectToDatabase } from '@/lib/mongodb'
+import { withAPIPerformanceTracking } from '../../../lib/api-performance-middleware'
+import { connectToDatabase } from '../../../lib/mongodb'
 
 interface AnalyticsPayload {
   type: 'performance_metric' | 'user_event' | 'api_metric' | 'system_health'

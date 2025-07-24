@@ -1,5 +1,5 @@
 import { AIServiceManager } from './ai-service-manager';
-import { getContextEnhancer } from '@/lib/context-enhancer';
+import { getContextEnhancer } from '../lib/context-enhancer';
 import { 
   CodeGenerationRequest, 
   CodeGenerationResult, 
@@ -11,7 +11,7 @@ import {
   ImprovementResult,
   AIServiceConfig,
   ProjectContext
-} from '@/types/ai-service';
+} from '../types/ai-service';
 import { performance } from 'perf_hooks';
 
 export class EnhancedAIService {
@@ -130,7 +130,7 @@ export class EnhancedAIService {
   /**
    * Enhanced code improvement suggestions with context awareness
    */
-  public async improveCode(request: ImprovementRequest): Promise<ImprovementResult> {
+  public async suggestImprovements(request: ImprovementRequest): Promise<ImprovementResult> {
     try {
       const enhancedContext = await this.contextEnhancer.enhanceCodeImprovement(request);
       
@@ -147,10 +147,10 @@ export class EnhancedAIService {
         }
       };
 
-      return this.aiService.improveCode(enhancedRequest);
+      return this.aiService.suggestImprovements(enhancedRequest);
     } catch (error) {
       console.error('Error in enhanced code improvement:', error);
-      return this.aiService.improveCode(request);
+      return this.aiService.suggestImprovements(request);
     }
   }
 

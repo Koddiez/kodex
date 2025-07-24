@@ -1,6 +1,5 @@
 import * as path from 'path';
-import * as fs from 'fs/promises';
-import { ProjectFile, ProjectContext } from '@/types/ai-service';
+import { ProjectFile, ProjectContext } from '../types/ai-service';
 import { performance } from 'perf_hooks';
 
 export interface CodeSnippet {
@@ -273,7 +272,9 @@ export class ContextAnalysisEngine {
   // Helper methods
   private async readFile(filePath: string): Promise<string> {
     try {
-      return await fs.readFile(filePath, 'utf-8');
+      // In browser environment, we can't read files directly
+      // This would need to be implemented differently for web
+      return '';
     } catch (error) {
       console.error(`Error reading file ${filePath}:`, error);
       return '';
